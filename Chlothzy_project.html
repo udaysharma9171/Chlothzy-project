@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chlothzy_Project</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        transition: all 0.3s ease;
+      }
+      body.dark-mode {
+        background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+      }
+      .theme-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+      }
+      .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+      }
+      .cart-counter {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+      .cart-counter.animate {
+        animation: bounce 0.5s ease;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+      .product-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        max-width: 400px;
+        width: 100%;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .dark-mode .product-card {
+        background: rgba(30, 30, 30, 0.95);
+        color: white;
+      }
+      .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 35px 70px rgba(0, 0, 0, 0.25);
+      }
+      .discount-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        animation: pulse 2s infinite;
+        z-index: 10;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      .product-image-container {
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 25px;
+        height: 300px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      }
+      .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        background: url(blue\ denim\ jacket.jpg);
+        background-size: cover;
+        background-position: center;
+      }
+      .product-image-container:hover .product-image {
+        transform: scale(1.1);
+      }
+      .product-details {
+        text-align: center;
+      }
+      .product-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
+      }
+      .dark-mode .product-name {
+        color: #f7fafc;
+      }
+      .product-price {
+        font-size: 28px;
+        font-weight: 800;
+        color: #667eea;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .original-price {
+        font-size: 18px;
+        color: #a0aec0;
+        text-decoration: line-through;
+        font-weight: 400;
+      }
+      .add-to-cart-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.5px;
+      }
+      .add-to-cart-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+      .add-to-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+      }
+      .add-to-cart-btn:hover::before {
+        left: 100%;
+      }
+      .add-to-cart-btn:active {
+        transform: translateY(0);
+      }
+      .add-to-cart-btn.added {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        animation: success 0.5s ease;
+      }
+      @keyframes success {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      @media (max-width: 768px) {
+        .product-card {
+          max-width: 350px;
+          padding: 20px;
+        }
+        .product-image-container {
+          height: 250px;
+        }
+        .product-name {
+          font-size: 20px;
+        }
+        .product-price {
+          font-size: 24px;
+        }
+        .cart-counter {
+          top: 10px;
+          left: 10px;
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+        .theme-toggle {
+          top: 10px;
+          right: 10px;
+          width: 40px;
+          height: 40px;
+          font-size: 16px;
+        }
+      }
+      @media (max-width: 480px) {
+        .product-card {
+          max-width: 300px;
+          padding: 15px;
+        }
+        .product-image-container {
+          height: 200px;
+        }
+        .product-name {
+          font-size: 18px;
+        }
+        .product-price {
+          font-size: 20px;
+        }
+        .add-to-cart-btn {
+          padding: 14px 28px;
+          font-size: 14px;
+        }
+      }
+      .custom-alert {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.95);
+        color: #2d3748;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        z-index: 2000;
+        text-align: center;
+        min-width: 300px;
+        animation: alertSlideIn 0.3s ease;
+      }
+
+      .dark-mode .custom-alert {
+        background: rgba(30, 30, 30, 0.95);
+        color: white;
+      }
+      @keyframes alertSlideIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+      .alert-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1999;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .alert-close {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .alert-close:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cart-counter" id="cartCounter">
+      🛒 Cart: <span id="cartCount">0</span>
+    </div>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+    <div class="product-card">
+      <div class="discount-badge">20% OFF</div>
+      <div class="product-image-container">
+        <div class="product-image"></div>
+      </div>
+      <div class="product-details">
+        <h2 class="product-name">Blue Denim Jacket</h2>
+        <div class="product-price">
+          ₹1,499
+          <span class="original-price">₹1,899</span>
+        </div>
+        <button class="add-to-cart-btn" id="addToCartBtn">Add to Cart</button>
+      </div>
+    </div>
+
+    <script>
+      let cartCount = 0;
+      let isDarkMode = false;
+
+      const addToCartBtn = document.getElementById("addToCartBtn");
+      const cartCounter = document.getElementById("cartCounter");
+      const cartCountDisplay = document.getElementById("cartCount");
+      const themeToggle = document.getElementById("themeToggle");
+      const body = document.body;
+
+      addToCartBtn.addEventListener("click", function () {
+        cartCount++;
+        cartCountDisplay.textContent = cartCount;
+
+        cartCounter.classList.add("animate");
+        setTimeout(() => {
+          cartCounter.classList.remove("animate");
+        }, 500);
+
+        addToCartBtn.classList.add("added");
+        addToCartBtn.textContent = "Added!";
+
+        setTimeout(() => {
+          addToCartBtn.classList.remove("added");
+          addToCartBtn.textContent = "Add to Cart";
+        }, 1000);
+
+        showCustomAlert("Blue Denim Jacket added to cart!");
+      });
+
+      themeToggle.addEventListener("click", function () {
+        isDarkMode = !isDarkMode;
+        body.classList.toggle("dark-mode");
+        themeToggle.textContent = isDarkMode ? "☀" : "🌙";
+      });
+
+      function showCustomAlert(message) {
+        const overlay = document.createElement("div");
+        overlay.className = "alert-overlay";
+
+        const alert = document.createElement("div");
+        alert.className = "custom-alert";
+        alert.innerHTML = `
+                <h3>✅ Success!</h3>
+                <p>${message}</p>
+                <button class="alert-close" onclick="closeAlert()">Continue Shopping</button>`;
+
+        document.body.appendChild(overlay);
+        document.body.appendChild(alert);
+ 
+        setTimeout(() => {
+          closeAlert();
+        }, 3000);
+      }
+      function closeAlert() {
+        const overlay = document.querySelector(".alert-overlay");
+        const alert = document.querySelector(".custom-alert");
+        if (overlay) overlay.remove();
+        if (alert) alert.remove();
+      }
+      document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("alert-overlay")) {
+          closeAlert();
+        }
+      });
+      window.addEventListener("load", function () {
+        const card = document.querySelector(".product-card");
+        card.style.opacity = "0";
+        card.style.transform = "translateY(30px)";
+
+        setTimeout(() => {
+          card.style.transition = "all 0.6s ease";
+          card.style.opacity = "1";
+          card.style.transform = "translateY(0)";
+        }, 200);
+      });
+    </script>
+  </body>
+</html>
